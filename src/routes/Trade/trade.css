@@ -1,0 +1,15 @@
+#layout .ant-trade-list,.search {
+    padding: 20px 50px
+}
+#layout .search {
+    padding: 20px 200px
+}
+#layout .ant-trade-list .list {
+    padding: 35px 35px 0 35px;
+    margin-bottom: 0px;
+}
+#layout .ant-trade-list .list .img {
+    padding: 15px 15px;
+    width:300px;
+    height:180px
+}

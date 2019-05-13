@@ -1,0 +1,15 @@
+#layout .ant-store-list {
+    padding: 20px 50px
+}
+#layout .ant-form {
+    padding: 20px 100px 0px 100px
+ }
+#layout .ant-store-list .list {
+    padding: 35px 35px 0 35px;
+    margin-bottom: 0px;
+}
+#layout .ant-store-list .list .img {
+     padding: 15px 15px;
+    width:300px;
+    height:180px
+}

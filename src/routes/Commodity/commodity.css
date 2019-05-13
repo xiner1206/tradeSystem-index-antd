@@ -1,0 +1,26 @@
+#layout .ant-commodity-list {
+    padding: 20px 50px
+}
+#layout .ant-commodity-list .list {
+    padding: 35px 35px 0 35px;
+    margin-bottom: 0px;
+}
+#layout .ant-commodity-list .list .img {
+    padding: 15px 15px;
+    width:300px;
+    height:180px
+}
+#layout .ant-carousel {
+  padding:15px 80px 0px 80px
+}
+#layout .ant-carousel .slick-slide {
+  text-align: center;
+  height: 180px;
+  line-height: 180px;
+  background: #364d79;
+  overflow: hidden;
+}
+
+#layout .ant-carousel .slick-slide h3 {
+  color: rgb(240, 34, 34);
+}
