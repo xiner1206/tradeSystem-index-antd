@@ -10,6 +10,15 @@
     width:300px;
     height:180px
 }
+#layout .commodity-list .list {
+    padding: 20px 20px 0 20px;
+    margin-bottom: 5px;
+}
+#layout .commodity-list .list .img {
+    padding: 10px 10px;
+    width:200px;
+    height:120px
+}
 #layout .ant-carousel {
   padding:15px 80px 0px 80px
 }

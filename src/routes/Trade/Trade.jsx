@@ -8,9 +8,10 @@ export default class Trade extends Component {
                  state = {
                    visible: false,
                    listData: [],
+                   hotlistData:[],
                    loading: true,
                    total: 1,
-                   modal: []
+                   modal: {}
                  };
 
                  componentDidMount() {
@@ -35,25 +36,37 @@ export default class Trade extends Component {
                      .catch(function(error) {
                        console.log(error);
                      });
+                     axios
+                       .post(
+                         "http://localhost:8080/TradingArea/trade/hotSearch",
+                         {
+                         }
+                       )
+                       .then(response => {
+                         this.setState({
+                           loading: false,
+                           hotlistData: response.data,
+                         });
+                         history.push(`trade?page=1`);
+                       })
+                       .catch(function(error) {
+                         console.log(error);
+                       });
                  }
 
                  handleViewDetail = tradeId => {
                    const history = this.props.history;
                    axios
                      .post(
-                       "http://localhost:8080/TradingArea/trade/onePic",
+                       "http://localhost:8080/TradingArea/trade/selectById",
                        {
-                         pageNum: "1",
-                         pageSize: "9",
-                         condition: {
                            tradeId: tradeId
-                         }
                        }
                      )
                      .then(response => {
                        this.setState({
                          visible: true,
-                         modal: response.data.list[0]
+                         modal: response.data
                        });
                      })
                      .catch(function(error) {
@@ -130,6 +143,7 @@ export default class Trade extends Component {
                  };
 
                  render() {
+                  
                    function getQueryString(name) {
                      var reg = new RegExp(
                        "(^|&)" + name + "=([^&]*)(&|$)",
@@ -157,9 +171,11 @@ export default class Trade extends Component {
                    const {
                      visible,
                      listData,
+                     hotlistData,
                      loading,
                      modal
                    } = this.state;
+                    console.log(modal.tradePicList)
                    return (
                      <Layout>
                        <Search
@@ -169,6 +185,74 @@ export default class Trade extends Component {
                          size="large"
                          onSearch={this.handleSearch}
                        />
+                       <h2>热门商圈</h2>
+                       <Divider />
+                       <List
+                         className="trade-list"
+                         grid={{ column: 4 }}
+                         size="Small"
+                         loading={loading}
+                         pagination={false}
+                         dataSource={hotlistData}
+                         renderItem={item => (
+                           <List.Item
+                             className="list"
+                             key={item.tradeId}
+                             extra={
+                               <div>
+                                 <img
+                                   className="img"
+                                   alt="logo"
+                                   src={item.url}
+                                 />
+                                 <br />
+                                 <Button
+                                   type="primary"
+                                   onClick={this.handleEnter.bind(
+                                     this,
+                                     item.tradeId
+                                   )}
+                                 >
+                                   进入商圈
+                                 </Button>
+                                 <Divider type="vertical" />
+                                 <Button
+                                   onClick={this.handleViewDetail.bind(
+                                     this,
+                                     item.tradeId
+                                   )}
+                                 >
+                                   查看信息
+                                 </Button>
+                               </div>
+                             }
+                           >
+                             <List.Item.Meta
+                               title={
+                                 <b>{item.tradeName}</b>
+                               }
+                             />
+                             <div>
+                               <span>
+                                 <b>地址：</b>
+                                 {item.tradeLocation}
+                               </span>
+                             </div>
+                             <div>
+                               <span>
+                                 <b>描述：</b>
+                                 {item.tradeRemark.substr(
+                                   0,
+                                   9
+                                 ) + "..."}
+                               </span>
+                             </div>
+                           </List.Item>
+                         )}
+                       />
+                       <Divider />
+                       <h2>所有商圈</h2>
+                       <Divider />
                        <List
                          className="ant-trade-list"
                          grid={{ column: 3 }}
@@ -227,7 +311,10 @@ export default class Trade extends Component {
                              <div>
                                <span>
                                  <b>描述：</b>
-                                 {item.tradeRemark}
+                                 {item.tradeRemark.substr(
+                                   0,
+                                   12
+                                 ) + "..."}
                                </span>
                              </div>
                            </List.Item>
@@ -256,7 +343,19 @@ export default class Trade extends Component {
                          </div>
                          <div>
                            <b>商圈图片：</b>
-                           <img src={modal.url} />
+                           {modal.tradePicList && modal.tradePicList.map(
+                             (item, index) => {
+                               console.log(item.url);
+                               return (
+                                 <div>
+                                   <img
+                                     src={item.url}
+                                     alt=""
+                                   />
+                                 </div>
+                               );
+                             }
+                           )}
                          </div>
                        </Modal>
                      </Layout>

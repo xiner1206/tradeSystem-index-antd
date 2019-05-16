@@ -9,23 +9,171 @@ export default class Commodity extends Component {
                    listData: [],
                    loading: true,
                    total: 1,
-                   modal: [],
+                   modal: {},
                    storeId: "",
-                   lists:[],
-                   actlist:[],
-                   actvisible:false
+                   lists: [],
+                   actlist: [],
+                   hotlistData: [],
+                   actvisible: false,
+                   samevisible: false
                  };
-                
 
                  componentDidMount() {
                    const history = this.props.history;
                    console.log(this.props.location.state);
-                   if(this.props.location.state){
-                      axios
+                   if (this.props.location.state) {
+                     axios
+                       .post(
+                         "http://localhost:8080/TradingArea/commodity/hotSearch",
+                         {
+                           storeId: this.props.location.state
+                             .storeId
+                         }
+                       )
+                       .then(response => {
+                         this.setState({
+                           loading: false,
+                           hotlistData: response.data
+                         });
+                         history.push(`commodity?page=1`);
+                       })
+                       .catch(function(error) {
+                         console.log(error);
+                       });
+                     axios
+                       .post(
+                         "http://localhost:8080/TradingArea/commodity/onePic",
+                         {
+                           pageNum: "1",
+                           pageSize: "9",
+                           condition: {
+                             store: {
+                               storeId: this.props.location.state
+                                 .storeId
+                             }
+                           }
+                         }
+                       )
+                       .then(response => {
+                         this.setState({
+                           loading: false,
+                           listData: response.data.list,
+                           total: response.data.totalRecord
+                         });
+                         history.push(`commodity?page=1`);
+                       })
+                       .catch(function(error) {
+                         console.log(error);
+                       });
+
+                     axios
+                       .post(
+                         "http://localhost:8080/TradingArea/activity/page",
+                         {
+                           pageNum: "1",
+                           pageSize: "9",
+                           condition: {
+                             createTime: "2010-02-20",
+                             endTime: "3000-10-23",
+                             store: {
+                               storeId: this.props.location.state
+                                 .storeId
+                             }
+                           }
+                         }
+                       )
+                       .then(response => {
+                         this.setState({
+                           lists: response.data.list
+                         });
+                         //  history.push(`commodity?page=1`);
+
+                         console.log(response);
+                       })
+                       .catch(function(error) {
+                         console.log(error);
+                       });
+                   } else {
+                     axios
+                       .post(
+                         "http://localhost:8080/TradingArea/commodity/hotSearch",
+                         {
+                           storeId: ""
+                         }
+                       )
+                       .then(response => {
+                         this.setState({
+                           loading: false,
+                           hotlistData: response.data
+                         });
+                         history.push(`commodity?page=1`);
+                       })
+                       .catch(function(error) {
+                         console.log(error);
+                       });
+                     axios
+                       .post(
+                         "http://localhost:8080/TradingArea/commodity/onePic",
+                         {
+                           pageNum: "1",
+                           pageSize: "9",
+                           condition: {
+                             store: {
+                               storeId: ""
+                             }
+                           }
+                         }
+                       )
+                       .then(response => {
+                         this.setState({
+                           loading: false,
+                           listData: response.data.list,
+                           total: response.data.totalRecord
+                         });
+                         history.push(`commodity?page=1`);
+                       })
+                       .catch(function(error) {
+                         console.log(error);
+                       });
+                     axios
+                       .post(
+                         "http://localhost:8080/TradingArea/activity/page",
+                         {
+                           pageNum: "1",
+                           pageSize: "9",
+                           condition: {
+                             createTime: "2010-02-20",
+                             endTime: "3000-10-23",
+                             store: {
+                               storeId: ""
+                             }
+                           }
+                         }
+                       )
+                       .then(response => {
+                         this.setState({
+                           lists: response.data.list
+                         });
+                         console.log(response);
+                       })
+                       .catch(function(error) {
+                         console.log(error);
+                       });
+                   }
+                 }
+
+                 onChange = page => {
+                   console.log({ page: page });
+                   this.setState({
+                     loading: true
+                   });
+                   const history = this.props.history;
+                   this.props.location.state
+                     ? axios
                          .post(
                            "http://localhost:8080/TradingArea/commodity/onePic",
                            {
-                             pageNum: "1",
+                             pageNum: page,
                              pageSize: "9",
                              condition: {
                                store: {
@@ -46,165 +194,68 @@ export default class Commodity extends Component {
                          .catch(function(error) {
                            console.log(error);
                          })
-
-                         axios.post(
-                           "http://localhost:8080/TradingArea/activity/page",
+                     : axios
+                         .post(
+                           "http://localhost:8080/TradingArea/commodity/onePic",
                            {
-                             pageNum: "1",
+                             pageNum: page,
                              pageSize: "9",
                              condition: {
-                               createTime: "2010-02-20",
-                               endTime: "3000-10-23",
                                store: {
-                                 storeId: this.props.location
-                                   .state.storeId
+                                 storeId: ""
                                }
                              }
                            }
                          )
                          .then(response => {
                            this.setState({
-                             lists: response.data.list,
+                             loading: false,
+                             listData: response.data.list,
+                             total: response.data.totalRecord
                            });
-                          //  history.push(`commodity?page=1`);
-                          
-                            console.log(response);
+                           history.push(`commodity?page=1`);
                          })
                          .catch(function(error) {
                            console.log(error);
-                         })
-                   }else{
-                        axios
-                          .post("http://localhost:8080/TradingArea/commodity/onePic", {
-                            pageNum: "1",
-                            pageSize: "9",
-                            condition: {
-                              store: {
-                                storeId: ""
-                              }
-                            }
-                          })
-                          .then(response => {
-                            this.setState({
-                              loading: false,
-                              listData: response.data.list,
-                              total: response.data.totalRecord
-                            });
-                            history.push(`commodity?page=1`);
-                          })
-                          .catch(function(error) {
-                            console.log(error);
-                          });
-                        axios
-                          .post(
-                            "http://localhost:8080/TradingArea/activity/page",
-                            {
-                              pageNum: "1",
-                              pageSize: "9",
-                              condition: {
-                                createTime:
-                                  "2010-02-20",
-                                endTime: "3000-10-23",
-                                store: {
-                                  storeId: ''
-                                }
-                              }
-                            }
-                          )
-                          .then(response => {
-                            this.setState({
-                             lists: response.data.list,
-                           });
-                            console.log(response);
-                          })
-                          .catch(function(error) {
-                            console.log(error);
-                          });
-                          }
-                        }
-
-                 onChange = page => {
-                   console.log({ page: page });
-                   this.setState({
-                     loading: true
-                   });
-                   const history = this.props.history;
-                    this.props.location.state
-                      ? axios
-                          .post(
-                            "http://localhost:8080/TradingArea/commodity/onePic",
-                            {
-                              pageNum: page,
-                              pageSize: "9",
-                              condition: {
-                                store: {
-                                  storeId: this.props
-                                    .location.state.storeId
-                                }
-                              }
-                            }
-                          )
-                          .then(response => {
-                            this.setState({
-                              loading: false,
-                              listData: response.data.list,
-                              total:
-                                response.data.totalRecord
-                            });
-                            history.push(
-                              `commodity?page=1`
-                            );
-                          })
-                          .catch(function(error) {
-                            console.log(error);
-                          })
-                      : axios
-                          .post(
-                            "http://localhost:8080/TradingArea/commodity/onePic",
-                            {
-                              pageNum: page,
-                              pageSize: "9",
-                              condition: {
-                                store: {
-                                  storeId: ""
-                                }
-                              }
-                            }
-                          )
-                          .then(response => {
-                            this.setState({
-                              loading: false,
-                              listData: response.data.list,
-                              total:
-                                response.data.totalRecord
-                            });
-                            history.push(
-                              `commodity?page=1`
-                            );
-                          })
-                          .catch(function(error) {
-                            console.log(error);
-                          });
+                         });
                  };
 
-                 handleViewDetail = commodityId => {
+                 handleViewDetail = (
+                   commodityId,
+                   commodityName
+                 ) => {
                    const history = this.props.history;
+                   console.log(commodityId, commodityName);
                    axios
                      .post(
-                       "http://localhost:8080/TradingArea/commodity/onePic",
+                       "http://localhost:8080/TradingArea/commodity/selectById",
                        {
-                         pageNum: "1",
-                         pageSize: "9",
-                         condition: {
-                           commodityId: commodityId
-                         }
+                         commodityId: commodityId
                        }
                      )
                      .then(response => {
                        this.setState({
                          visible: true,
-                         modal: response.data.list[0],
-                         storeId: response.data.list[0].storeId
+                         modal: response.data,
+                         storeId: response.data.store.storeId
+                       });
+                     })
+                     .catch(function(error) {
+                       console.log(error);
+                     });
+                   axios
+                     .post(
+                       "http://localhost:8080/TradingArea/commodity/sameName",
+                       {
+                         commodityId: commodityId,
+                         commodityName: commodityName
+                       }
+                     )
+                     .then(response => {
+                       console.log(response);
+                       this.setState({
+                         visible: true,
+                         samelistData: response.data
                        });
                      })
                      .catch(function(error) {
@@ -214,9 +265,37 @@ export default class Commodity extends Component {
                      visible: true
                    });
                  };
+                 handleSameViewDetail = (
+                   commodityId,
+                   commodityName
+                 ) => {
+                   const history = this.props.history;
+                   console.log(commodityId, commodityName);
+                   axios
+                     .post(
+                       "http://localhost:8080/TradingArea/commodity/selectById",
+                       {
+                         commodityId: commodityId
+                       }
+                     )
+                     .then(response => {
+                       this.setState({
+                         samevisible: true,
+                         modal: response.data,
+                         storeId: response.data.store.storeId
+                       });
+                     })
+                     .catch(function(error) {
+                       console.log(error);
+                     });
+                   this.setState({
+                     samevisible: true
+                   });
+                 };
                  handleOk = () => {
                    this.setState({
-                     visible: false
+                     visible: false,
+                     samevisible:false
                    });
                    this.props.history.push({
                      pathname: `/commodity`,
@@ -255,10 +334,10 @@ export default class Commodity extends Component {
                  handleCloseDetail = () => {
                    this.setState({
                      visible: false,
-                     actvisible:false
+                     actvisible: false
                    });
                  };
-                 handleImg=(list)=>{
+                 handleImg = list => {
                    const history = this.props.history;
                    axios
                      .post(
@@ -267,9 +346,9 @@ export default class Commodity extends Component {
                          pageNum: "1",
                          pageSize: "9",
                          condition: {
-                           createTime:"2010-02-20",
+                           createTime: "2010-02-20",
                            endTime: "3000-10-23",
-                           activityId:list.activityId
+                           activityId: list.activityId
                          }
                        }
                      )
@@ -282,7 +361,7 @@ export default class Commodity extends Component {
                      .catch(function(error) {
                        console.log(error);
                      });
-                 }
+                 };
                  render() {
                    function getQueryString(name) {
                      var reg = new RegExp(
@@ -307,45 +386,95 @@ export default class Commodity extends Component {
                        return null;
                      }
                    }
-                   const page = parseInt(
-                     getQueryString("page")
-                   );
+                   const page = parseInt(getQueryString("page"));
                    const {
                      visible,
                      listData,
                      loading,
                      modal,
                      actlist,
-                     actvisible
+                     hotlistData,
+                     actvisible,
+                     samelistData,
+                     samevisible
                    } = this.state;
                    return (
                      <Layout>
                        <Carousel autoplay>
-                         {this.state.lists.map(
-                           (list, index) => {
-                             return list.activityPicList.map(
-                               (item, index) => {
-                                 console.log(item.url);
-                                 return (
-                                   <div
-                                     onClick={this.handleImg.bind(
-                                       this,
-                                       list
-                                     )}
-                                   >
-                                     <img
-                                       width="100%"
-                                       height="180px"
-                                       src={item.url}
-                                       alt=""
-                                     />
-                                   </div>
-                                 );
-                               }
-                             );
-                           }
-                         )}
+                         {this.state.lists.map((list, index) => {
+                           return list.activityPicList.map(
+                             (item, index) => {
+                               return (
+                                 <div
+                                   onClick={this.handleImg.bind(
+                                     this,
+                                     list
+                                   )}
+                                 >
+                                   <img
+                                     width="100%"
+                                     height="180px"
+                                     src={item.url}
+                                     alt=""
+                                   />
+                                 </div>
+                               );
+                             }
+                           );
+                         })}
                        </Carousel>
+                       <Divider />
+                       <h2>热销商品</h2>
+                       <Divider />
+                       <List
+                         className="commodity-list"
+                         grid={{ column: 4 }}
+                         loading={loading}
+                         size="middle"
+                         pagination={false}
+                         dataSource={hotlistData}
+                         renderItem={item => (
+                           <List.Item
+                             className="list"
+                             key={item.commodityId}
+                             onClick={this.handleViewDetail.bind(
+                               this,
+                               item.commodityId,
+                               item.commodityName
+                             )}
+                             extra={
+                               <div>
+                                 <img
+                                   className="img"
+                                   alt="logo"
+                                   src={item.url}
+                                 />
+                               </div>
+                             }
+                           >
+                             <List.Item.Meta
+                               title={
+                                 <b>{item.commodityName}</b>
+                               }
+                             />
+                             <div>
+                               <span>
+                                 <b>价格：</b>
+                                 {item.commodityPrice}元
+                               </span>
+                             </div>
+                             <div>
+                               <span>
+                                 <b>描述：</b>
+                                 {item.commodityRemark}
+                               </span>
+                             </div>
+                           </List.Item>
+                         )}
+                       />
+                       <Divider />
+                       <h2>所有商品</h2>
+                       <Divider />
                        <List
                          className="ant-commodity-list"
                          grid={{ column: 3 }}
@@ -363,7 +492,8 @@ export default class Commodity extends Component {
                              key={item.commodityId}
                              onClick={this.handleViewDetail.bind(
                                this,
-                               item.commodityId
+                               item.commodityId,
+                               item.commodityName
                              )}
                              extra={
                                <div>
@@ -448,7 +578,98 @@ export default class Commodity extends Component {
                          </div>
                          <div>
                            <b>商品图片：</b>
-                           <img src={modal.url} />
+                           {modal.commodityPicList &&
+                             modal.commodityPicList.map(item => {
+                               return (
+                                 <img
+                                   key={item.pictureId}
+                                   src={item.url}
+                                   alt=""
+                                 />
+                               );
+                             })}
+                         </div>
+                         <div>
+                           <b>类似商品：</b>
+                           <List
+                             className="ant-commodity-list"
+                             grid={{ column: 4 }}
+                             loading={loading}
+                             size="small"
+                             pagination={false}
+                             dataSource={samelistData}
+                             renderItem={item => (
+                               <List.Item
+                                 className="list"
+                                 key={item.commodityId}
+                                 onClick={this.handleSameViewDetail.bind(
+                                   this,
+                                   item.commodityId
+                                 )}
+                                 extra={
+                                   <img
+                                     className="img"
+                                     alt="logo"
+                                     src={item.url}
+                                   />
+                                 }
+                               >
+                                 <List.Item.Meta
+                                   title={
+                                     <b>{item.commodityName}</b>
+                                   }
+                                 />
+                                 <div>
+                                   <span>
+                                     <b>价格：</b>
+                                     {item.commodityPrice}元
+                                   </span>
+                                 </div>
+                                 <div>
+                                   <span>
+                                     <b>描述：</b>
+                                     {item.commodityRemark}
+                                   </span>
+                                 </div>
+                               </List.Item>
+                             )}
+                           />
+                         </div>
+                       </Modal>
+                       <Modal
+                         wrapClassName="detail"
+                         title={modal.commodityName}
+                         visible={samevisible}
+                         okText="进入店铺"
+                         cancelText="取消"
+                         width={500}
+                         onCancel={this.handleCloseDetail}
+                         onOk={this.handleOk}
+                       >
+                         <div>
+                           <b>商品名称：</b>
+                           {modal.commodityName}
+                         </div>
+                         <div>
+                           <b>商品价格：</b>
+                           {modal.commodityPrice}元
+                         </div>
+                         <div>
+                           <b>商品描述：</b>
+                           {modal.commodityRemark}
+                         </div>
+                         <div>
+                           <b>商品图片：</b>
+                           {modal.commodityPicList &&
+                             modal.commodityPicList.map(item => {
+                               return (
+                                 <img
+                                   key={item.pictureId}
+                                   src={item.url}
+                                   alt=""
+                                 />
+                               );
+                             })}
                          </div>
                        </Modal>
                      </Layout>
