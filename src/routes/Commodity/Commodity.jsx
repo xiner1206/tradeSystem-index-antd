@@ -15,7 +15,8 @@ export default class Commodity extends Component {
                    actlist: [],
                    hotlistData: [],
                    actvisible: false,
-                   samevisible: false
+                   samevisible: false,
+                   samemodal:{}
                  };
 
                  componentDidMount() {
@@ -281,7 +282,7 @@ export default class Commodity extends Component {
                      .then(response => {
                        this.setState({
                          samevisible: true,
-                         modal: response.data,
+                         samemodal: response.data,
                          storeId: response.data.store.storeId
                        });
                      })
@@ -335,6 +336,11 @@ export default class Commodity extends Component {
                    this.setState({
                      visible: false,
                      actvisible: false
+                   });
+                 };
+                 handleCloseSameDetail = () => {
+                   this.setState({
+                     samevisible: false
                    });
                  };
                  handleImg = list => {
@@ -396,32 +402,35 @@ export default class Commodity extends Component {
                      hotlistData,
                      actvisible,
                      samelistData,
-                     samevisible
+                     samevisible,
+                     samemodal
                    } = this.state;
                    return (
                      <Layout>
                        <Carousel autoplay>
-                         {this.state.lists.map((list, index) => {
-                           return list.activityPicList.map(
-                             (item, index) => {
-                               return (
-                                 <div
-                                   onClick={this.handleImg.bind(
-                                     this,
-                                     list
-                                   )}
-                                 >
-                                   <img
-                                     width="100%"
-                                     height="180px"
-                                     src={item.url}
-                                     alt=""
-                                   />
-                                 </div>
-                               );
-                             }
-                           );
-                         })}
+                         {this.state.lists.map(
+                           (list, index) => {
+                             return list.activityPicList.map(
+                               (item, index) => {
+                                 return (
+                                   <div
+                                     onClick={this.handleImg.bind(
+                                       this,
+                                       list
+                                     )}
+                                   >
+                                     <img
+                                       width="100%"
+                                       height="180px"
+                                       src={item.url}
+                                       alt=""
+                                     />
+                                   </div>
+                                 );
+                               }
+                             );
+                           }
+                         )}
                        </Carousel>
                        <Divider />
                        <h2>热销商品</h2>
@@ -579,15 +588,17 @@ export default class Commodity extends Component {
                          <div>
                            <b>商品图片：</b>
                            {modal.commodityPicList &&
-                             modal.commodityPicList.map(item => {
-                               return (
-                                 <img
-                                   key={item.pictureId}
-                                   src={item.url}
-                                   alt=""
-                                 />
-                               );
-                             })}
+                             modal.commodityPicList.map(
+                               item => {
+                                 return (
+                                   <img
+                                     key={item.pictureId}
+                                     src={item.url}
+                                     alt=""
+                                   />
+                                 );
+                               }
+                             )}
                          </div>
                          <div>
                            <b>类似商品：</b>
@@ -616,7 +627,9 @@ export default class Commodity extends Component {
                                >
                                  <List.Item.Meta
                                    title={
-                                     <b>{item.commodityName}</b>
+                                     <b>
+                                       {item.commodityName}
+                                     </b>
                                    }
                                  />
                                  <div>
@@ -638,38 +651,42 @@ export default class Commodity extends Component {
                        </Modal>
                        <Modal
                          wrapClassName="detail"
-                         title={modal.commodityName}
+                         title={samemodal.commodityName}
                          visible={samevisible}
                          okText="进入店铺"
                          cancelText="取消"
                          width={500}
-                         onCancel={this.handleCloseDetail}
+                         onCancel={
+                           this.handleCloseSameDetail
+                         }
                          onOk={this.handleOk}
                        >
                          <div>
                            <b>商品名称：</b>
-                           {modal.commodityName}
+                           {samemodal.commodityName}
                          </div>
                          <div>
                            <b>商品价格：</b>
-                           {modal.commodityPrice}元
+                           {samemodal.commodityPrice}元
                          </div>
                          <div>
                            <b>商品描述：</b>
-                           {modal.commodityRemark}
+                           {samemodal.commodityRemark}
                          </div>
                          <div>
                            <b>商品图片：</b>
-                           {modal.commodityPicList &&
-                             modal.commodityPicList.map(item => {
-                               return (
-                                 <img
-                                   key={item.pictureId}
-                                   src={item.url}
-                                   alt=""
-                                 />
-                               );
-                             })}
+                           {samemodal.commodityPicList &&
+                             samemodal.commodityPicList.map(
+                               item => {
+                                 return (
+                                   <img
+                                     key={item.pictureId}
+                                     src={item.url}
+                                     alt=""
+                                   />
+                                 );
+                               }
+                             )}
                          </div>
                        </Modal>
                      </Layout>
