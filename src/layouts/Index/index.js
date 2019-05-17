@@ -15,7 +15,7 @@ render() {
                   src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1051648285,2214287494&fm=26&gp=0.jpg"
                   alt=""
                 />
-                <h3>商场</h3>
+                <h3>商圈</h3>
                 <h4>Trading Area</h4>
               </div>
             </a>

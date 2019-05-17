@@ -185,7 +185,7 @@ export default class Trade extends Component {
                          size="large"
                          onSearch={this.handleSearch}
                        />
-                       <h2>热门商场</h2>
+                       <h2>热门商圈</h2>
                        <Divider />
                        <List
                          className="trade-list"
@@ -213,7 +213,7 @@ export default class Trade extends Component {
                                      item.tradeId
                                    )}
                                  >
-                                   进入商场
+                                   进入商圈
                                  </Button>
                                  <Divider type="vertical" />
                                  <Button
@@ -251,7 +251,7 @@ export default class Trade extends Component {
                          )}
                        />
                        <Divider />
-                       <h2>所有商场</h2>
+                       <h2>所有商圈</h2>
                        <Divider />
                        <List
                          className="ant-trade-list"
@@ -283,7 +283,7 @@ export default class Trade extends Component {
                                      item.tradeId
                                    )}
                                  >
-                                   进入商场
+                                   进入商圈
                                  </Button>
                                  <Divider type="vertical" />
                                  <Button
@@ -324,25 +324,25 @@ export default class Trade extends Component {
                          wrapClassName="detail"
                          title={modal.tradeName}
                          visible={visible}
-                         okText="进入商场"
+                         okText="进入商圈"
                          cancelText="取消"
                          width={800}
                          onCancel={this.handleCloseDetail}
                        >
                          <div>
-                           <b>商场地址：</b>
+                           <b>商圈地址：</b>
                            {modal.tradeLocation}
                          </div>
                          <div>
-                           <b>商场热线：</b>
+                           <b>商圈热线：</b>
                            {modal.tradePhone}
                          </div>
                          <div>
-                           <b>商场简介：</b>
+                           <b>商圈简介：</b>
                            {modal.tradeRemark}
                          </div>
                          <div>
-                           <b>商场图片：</b>
+                           <b>商圈图片：</b>
                            {modal.tradePicList && modal.tradePicList.map(
                              (item, index) => {
                                console.log(item.url);

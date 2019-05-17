@@ -492,7 +492,7 @@ class Store extends Component {
                 </div>
                 <div>
                   <span>
-                    <b>所属商场：</b>
+                    <b>所属商圈：</b>
                     {item.store.trade.tradeName}
                   </span>
                 </div>
@@ -784,7 +784,7 @@ class Store extends Component {
           wrapClassName="detail"
           title={modal.storeName}
           visible={visible}
-          okText="进入商场"
+          okText="进入商圈"
           cancelText="取消"
           width={800}
           onCancel={this.handleCloseDetail}
