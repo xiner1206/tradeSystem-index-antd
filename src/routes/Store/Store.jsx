@@ -9,16 +9,20 @@ import {
   Form,
   Rate,
   Input,
-  Select
+  Select,
+  Popconfirm,
+  Drawer
 } from "antd";
-import React, { Component } from 'react'
-import Layout from '../../layouts/Layout/Layout'
+import React, { Component } from "react";
+import Layout from "../../layouts/Layout/Layout";
 import axios from "axios";
-import './store.css'
+import "./store.css";
+const compare = [];
 class Store extends Component {
   state = {
     visible: false,
     ratevisible: false,
+    comparevisible: false,
     listData: [],
     hotlistData: [],
     loading: true,
@@ -26,7 +30,9 @@ class Store extends Component {
     modal: {},
     tradeId: "",
     storeId: "",
-    score:{}
+    score: {},
+    text: 0,
+    comparelistData:[]
   };
 
   handleViewDetail = storeId => {
@@ -62,6 +68,55 @@ class Store extends Component {
       visible: true
     });
   };
+  handleCompare = item => {
+    let list = this.state.hotlistData.slice();
+    if (item.status === 0) {
+      let judge = compare.indexOf(item.storeId);
+      if (compare.length >= 2 || judge > -1) {
+        message.error("只支持对比两家不同店铺哦~");
+        return;
+      }
+      compare.push(item.storeId);
+    } else {
+      compare.pop(item.storeId);
+    }
+
+    list = list.map(i => {
+      if (item.storeId === i.storeId) {
+        i.status = item.status === 0 ? 1 : 0;
+      }
+      return i;
+    });
+    console.log(compare);
+
+    this.setState({
+      hotlistData: list
+    });
+  };
+  handleAllCompare = item => {
+    let list = this.state.listData.slice();
+    if (item.status === 0) {
+      let judge = compare.indexOf(item.storeId);
+      if (compare.length >= 2 || judge > -1) {
+        message.error("只支持对比两家不同店铺哦~");
+        return;
+      }
+      compare.push(item.storeId);
+    } else {
+      compare.pop(item.storeId);
+    }
+
+    list = list.map(i => {
+      if (item.storeId === i.storeId) {
+        i.status = item.status === 0 ? 1 : 0;
+      }
+      return i;
+    });
+    console.log(compare);
+    this.setState({
+      listData: list
+    });
+  };
   componentDidMount() {
     const history = this.props.history;
     if (this.props.location.state) {
@@ -70,9 +125,12 @@ class Store extends Component {
           tradeId: this.props.location.state.tradeId
         })
         .then(response => {
+          //改动
+          let list = response.data || [];
+          list = list.map(item => ({ ...item, status: 0 }));
           this.setState({
             loading: false,
-            hotlistData: response.data
+            hotlistData: list
           });
           history.push(`store?page=1`);
         })
@@ -90,9 +148,12 @@ class Store extends Component {
           }
         })
         .then(response => {
+          let list = response.data.list || [];
+          list = list.map(item => ({ ...item, status: 0 }));
+
           this.setState({
             loading: false,
-            listData: response.data.list,
+            listData: list,
             total: response.data.totalRecord
           });
           history.push(`store?page=1`);
@@ -106,9 +167,12 @@ class Store extends Component {
           tradeId: ""
         })
         .then(response => {
+          //改动
+          let list = response.data || [];
+          list = list.map(item => ({ ...item, status: 0 }));
           this.setState({
             loading: false,
-            hotlistData: response.data
+            hotlistData: list
           });
           history.push(`store?page=1`);
         })
@@ -126,9 +190,12 @@ class Store extends Component {
           }
         })
         .then(response => {
+          let list = response.data.list || [];
+          list = list.map(item => ({ ...item, status: 0 }));
+
           this.setState({
             loading: false,
-            listData: response.data.list,
+            listData: list,
             total: response.data.totalRecord
           });
           history.push(`store?page=1`);
@@ -319,6 +386,31 @@ class Store extends Component {
       }
     });
   };
+  handleStoreCompare = () => {
+    if (compare.length < 2) {
+      message.error("请选择两个店铺进行对比哦~");
+    } else {
+      axios
+        .post("http://localhost:8080/TradingArea/score/compareStore", {
+          storeIds: compare
+        })
+        .then(response => {
+          console.log(response);
+          this.setState({
+            comparevisible: true,
+            comparelistData:response.data
+          });
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    }
+  };
+  onClose = () => {
+    this.setState({
+      comparevisible: false
+    });
+  };
 
   render() {
     function getQueryString(name) {
@@ -342,38 +434,116 @@ class Store extends Component {
       modal,
       hotlistData,
       ratevisible,
-      score
+      score,
+      comparelistData
     } = this.state;
-    console.log(score.environment)
+    console.log(score.environment);
     const Option = Select.Option;
     const { getFieldDecorator } = this.props.form;
     return (
       <Layout>
+        <Drawer
+          width={600}
+          title="店铺对比"
+          placement="right"
+          closable={false}
+          onClose={this.onClose}
+          visible={this.state.comparevisible}
+        >
+          <List
+            className="ant-store-list"
+            grid={{ column: 2 }}
+            pagination={null}
+            dataSource={comparelistData}
+            renderItem={item => (
+              <List.Item
+                className="list"
+                key={item.store.storeId}
+                extra={
+                  <div>
+                    <img className="img" alt="logo" src={item.store.url} />
+                  </div>
+                }
+              >
+                <List.Item.Meta
+                  title={
+                    <b>
+                      [{item.store.storeType}]{item.store.storeName}
+                    </b>
+                  }
+                />
+                <div>
+                  <span>
+                    <b>地址：</b>
+                    {item.store.storeLocation}
+                  </span>
+                </div>
+                <div>
+                  <span>
+                    <b>描述：</b>
+                    {item.store.storeRemark}
+                  </span>
+                </div>
+                <div>
+                  <span>
+                    <b>店铺热线：</b>
+                    {item.store.storePhone}
+                  </span>
+                </div>
+                <div>
+                  <span>
+                    <b>所属商场：</b>
+                    {item.store.trade.tradeName}
+                  </span>
+                </div>
+                <div>
+                  <b>店铺评分：</b>
+                  <div>
+                    <span>环 境： </span>
+                    <Rate disabled allowHalf value={item.environment} />
+                  </div>
+                  <div>
+                    <span>服 务： </span>
+                    <Rate disabled allowHalf value={item.serve} />
+                  </div>
+                  <div>
+                    <span>性价比：</span>
+                    <Rate disabled allowHalf value={item.substantial} />
+                  </div>
+                  <div>
+                    <span>总 评： </span>
+                    <Rate disabled allowHalf value={item.totalScore} />
+                  </div>
+                </div>
+              </List.Item>
+            )}
+          />
+        </Drawer>
         <Form
           className="ant-advanced-search-form"
           onSubmit={this.handleSearch}
         >
           <Row gutter={24}>
             <Col span={8}>
-              <Form.Item label={`商铺名称`}>
+              <Form.Item label={`店铺名称`}>
                 {getFieldDecorator("storeName", {
                   rules: [
                     {
                       required: false,
-                      message: "请输入商铺名称"
+                      message: "请输入店铺名称"
                     }
                   ]
-                })(<Input placeholder="商铺名称" id="storeName" />)}
+                })(<Input placeholder="店铺名称" id="storeName" />)}
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label={`商铺类型`}>
+              <Form.Item label={`店铺类型`}>
                 {getFieldDecorator("storeType", {
                   initialValue: "美食",
                   rules: [
                     {
                       required: false,
-                      message: "请选择商铺类型"
+                      message: "请选择店铺类型"
                     }
                   ]
                 })(
@@ -397,6 +567,13 @@ class Store extends Component {
               </Button>
               <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
                 清空
+              </Button>
+
+              <Button
+                style={{ marginLeft: 24 }}
+                onClick={this.handleStoreCompare}
+              >
+                查看对比
               </Button>
             </Col>
           </Row>
@@ -433,7 +610,7 @@ class Store extends Component {
                   >
                     查看信息
                   </Button>
-                  <br/>
+                  <br />
                   <Button
                     size="small"
                     onClick={this.handleRate.bind(this, item.storeId)}
@@ -441,7 +618,29 @@ class Store extends Component {
                     评分
                   </Button>
                   <Divider type="vertical" />
-                  <Button size="small">对比</Button>
+                  <Popconfirm
+                    title={
+                      item.status === 0
+                        ? "确定加入对比？"
+                        : "确定取消对比？"
+                    }
+                    onConfirm={this.handleCompare.bind(this, item)}
+                    // onConfirm={this.handleCompare.bind(this, item.storeId)}
+                    // onCancel={cancel}
+                    // visible={compare.length >= 2 && item.status === 0}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button
+                      size="small"
+                      disabled={compare.length >= 2 && item.status === 0}
+                    >
+                      {item.status === 0 ? "对比" : "已对比"}
+                    </Button>
+                    {/* <Button size="small">
+                      {item.status === 0 ? "对比" : "已对比"}
+                    </Button> */}
+                  </Popconfirm>
                 </div>
               }
             >
@@ -522,7 +721,29 @@ class Store extends Component {
                     评分
                   </Button>
                   <Divider type="vertical" />
-                  <Button size="small">对比</Button>
+                  <Popconfirm
+                    title={
+                      item.status === 0
+                        ? "确定加入对比？"
+                        : "确定取消对比？"
+                    }
+                    onConfirm={this.handleAllCompare.bind(this, item)}
+                    // onConfirm={this.handleCompare.bind(this, item.storeId)}
+                    // onCancel={cancel}
+                    // visible={compare.length >= 2 && item.status === 0}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button
+                      size="small"
+                      disabled={compare.length >= 2 && item.status === 0}
+                    >
+                      {item.status === 0 ? "对比" : "已对比"}
+                    </Button>
+                    {/* <Button size="small">
+                      {item.status === 0 ? "对比" : "已对比"}
+                    </Button> */}
+                  </Popconfirm>
                 </div>
               }
             >
@@ -563,7 +784,7 @@ class Store extends Component {
           wrapClassName="detail"
           title={modal.storeName}
           visible={visible}
-          okText="进入商圈"
+          okText="进入商场"
           cancelText="取消"
           width={800}
           onCancel={this.handleCloseDetail}

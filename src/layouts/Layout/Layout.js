@@ -33,13 +33,13 @@ class MyLayout extends Component {
             <Menu.Item key="trade" span={8}>
               <Link to="/trade">
                 <Icon type="shopping" />
-                商圈
+                商场
               </Link>
             </Menu.Item>
             <Menu.Item key="store" span={8}>
               <Link to="/store">
                 <Icon type="shop" />
-                商铺
+                店铺
               </Link>
             </Menu.Item>
             <Menu.Item key="commodity" span={8}>
