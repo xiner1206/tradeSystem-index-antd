@@ -1,4 +1,4 @@
-import { List, Input, Icon, Divider, Button, Modal } from "antd";
+import { List, Input,  Divider, Button, Modal } from "antd";
 import React, { Component } from 'react'
 import Layout from '../../layouts/Layout/Layout'
 import './trade.css'
@@ -55,7 +55,6 @@ export default class Trade extends Component {
                  }
 
                  handleViewDetail = tradeId => {
-                   const history = this.props.history;
                    axios
                      .post(
                        "http://localhost:8080/TradingArea/trade/selectById",
@@ -235,16 +234,23 @@ export default class Trade extends Component {
                              <div>
                                <span>
                                  <b>地址：</b>
-                                 {item.tradeLocation}
+                                 {item.tradeLocation.length > 11
+                                   ? item.tradeLocation.substr(
+                                       0,
+                                       11
+                                     ) + "..."
+                                   : item.tradeLocation}
                                </span>
                              </div>
                              <div>
                                <span>
                                  <b>描述：</b>
-                                 {item.tradeRemark.substr(
-                                   0,
-                                   9
-                                 ) + "..."}
+                                 {item.tradeRemark.length > 9
+                                   ? item.tradeRemark.substr(
+                                       0,
+                                       9
+                                     ) + "..."
+                                   : item.tradeRemark}
                                </span>
                              </div>
                            </List.Item>
@@ -305,16 +311,23 @@ export default class Trade extends Component {
                              <div>
                                <span>
                                  <b>地址：</b>
-                                 {item.tradeLocation}
+                                 {item.tradeLocation.length > 11
+                                   ? item.tradeLocation.substr(
+                                       0,
+                                       11
+                                     ) + "..."
+                                   : item.tradeLocation}
                                </span>
                              </div>
                              <div>
                                <span>
                                  <b>描述：</b>
-                                 {item.tradeRemark.substr(
-                                   0,
-                                   12
-                                 ) + "..."}
+                                 {item.tradeRemark.length > 9
+                                   ? item.tradeRemark.substr(
+                                       0,
+                                       9
+                                     ) + "..."
+                                   : item.tradeRemark}
                                </span>
                              </div>
                            </List.Item>
@@ -343,19 +356,20 @@ export default class Trade extends Component {
                          </div>
                          <div>
                            <b>商圈图片：</b>
-                           {modal.tradePicList && modal.tradePicList.map(
-                             (item, index) => {
-                               console.log(item.url);
-                               return (
-                                 <div>
-                                   <img
-                                     src={item.url}
-                                     alt=""
-                                   />
-                                 </div>
-                               );
-                             }
-                           )}
+                           {modal.tradePicList &&
+                             modal.tradePicList.map(
+                               (item, index) => {
+                                 console.log(item.url);
+                                 return (
+                                   <div>
+                                     <img
+                                       src={item.url}
+                                       alt=""
+                                     />
+                                   </div>
+                                 );
+                               }
+                             )}
                          </div>
                        </Modal>
                      </Layout>

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Layout, Menu, Icon } from "antd";
-import { Link, Route, withRouter } from "react-router-dom";
+import { Link,  withRouter } from "react-router-dom";
 import "./Layout.css";
 class MyLayout extends Component {
   state = {

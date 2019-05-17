@@ -36,7 +36,6 @@ class Store extends Component {
   };
 
   handleViewDetail = storeId => {
-    const history = this.props.history;
     axios
       .post("http://localhost:8080/TradingArea/store/selectById", {
         storeId: storeId
@@ -410,6 +409,7 @@ class Store extends Component {
     this.setState({
       comparevisible: false
     });
+    compare.splice(0);
   };
 
   render() {
@@ -475,13 +475,17 @@ class Store extends Component {
                 <div>
                   <span>
                     <b>地址：</b>
-                    {item.store.storeLocation}
+                    {item.store.storeLocation.length > 11
+                      ? item.store.storeLocation.substr(0, 11) + "..."
+                      : item.store.storeLocation}
                   </span>
                 </div>
                 <div>
                   <span>
                     <b>描述：</b>
-                    {item.store.storeRemark}
+                    {item.store.storeRemark.length > 11
+                      ? item.store.storeRemark.substr(0, 11) + "..."
+                      : item.store.storeRemark}
                   </span>
                 </div>
                 <div>
@@ -665,13 +669,17 @@ class Store extends Component {
               <div>
                 <span>
                   <b>地址：</b>
-                  {item.storeLocation}
+                  {item.storeLocation.length > 11
+                    ? item.storeLocation.substr(0, 11) + "..."
+                    : item.storeLocation}
                 </span>
               </div>
               <div>
                 <span>
                   <b>描述：</b>
-                  {item.storeRemark.substr(0, 9) + "..."}
+                  {item.storeRemark.length > 11
+                    ? item.storeRemark.substr(0, 11) + "..."
+                    : item.storeRemark}
                 </span>
               </div>
             </List.Item>
@@ -768,13 +776,17 @@ class Store extends Component {
               <div>
                 <span>
                   <b>地址：</b>
-                  {item.storeLocation}
+                  {item.storeLocation.length > 11
+                    ? item.storeLocation.substr(0, 11) + "..."
+                    : item.storeLocation}
                 </span>
               </div>
               <div>
                 <span>
                   <b>描述：</b>
-                  {item.storeRemark.substr(0, 12) + "..."}
+                  {item.storeRemark.length > 11
+                    ? item.storeRemark.substr(0, 11) + "..."
+                    : item.storeRemark}
                 </span>
               </div>
             </List.Item>

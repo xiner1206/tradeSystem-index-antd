@@ -1,4 +1,4 @@
-import { List, Avatar, Carousel, Divider, Button, Modal } from "antd";
+import { List,  Carousel, Divider, Modal } from "antd";
 import React, { Component } from 'react'
 import Layout from '../../layouts/Layout/Layout'
 import axios from 'axios'
@@ -225,7 +225,6 @@ export default class Commodity extends Component {
                    commodityId,
                    commodityName
                  ) => {
-                   const history = this.props.history;
                    console.log(commodityId, commodityName);
                    axios
                      .post(
@@ -270,7 +269,6 @@ export default class Commodity extends Component {
                    commodityId,
                    commodityName
                  ) => {
-                   const history = this.props.history;
                    console.log(commodityId, commodityName);
                    axios
                      .post(
@@ -344,7 +342,6 @@ export default class Commodity extends Component {
                    });
                  };
                  handleImg = list => {
-                   const history = this.props.history;
                    axios
                      .post(
                        "http://localhost:8080/TradingArea/activity/page",
@@ -475,7 +472,13 @@ export default class Commodity extends Component {
                              <div>
                                <span>
                                  <b>描述：</b>
-                                 {item.commodityRemark}
+                                 {item.commodityRemark
+                                   .length > 8
+                                   ? item.commodityRemark.substr(
+                                       0,
+                                       8
+                                     ) + "..."
+                                   : item.commodityRemark}
                                </span>
                              </div>
                            </List.Item>
@@ -528,7 +531,13 @@ export default class Commodity extends Component {
                              <div>
                                <span>
                                  <b>描述：</b>
-                                 {item.commodityRemark}
+                                 {item.commodityRemark
+                                   .length > 15
+                                   ? item.commodityRemark.substr(
+                                       0,
+                                       15
+                                     ) + "..."
+                                   : item.commodityRemark}
                                </span>
                              </div>
                            </List.Item>
@@ -641,7 +650,13 @@ export default class Commodity extends Component {
                                  <div>
                                    <span>
                                      <b>描述：</b>
-                                     {item.commodityRemark}
+                                     {item.commodityRemark
+                                       .length > 8
+                                       ? item.commodityRemark.substr(
+                                           0,
+                                           8
+                                         ) + "..."
+                                       : item.commodityRemark}
                                    </span>
                                  </div>
                                </List.Item>

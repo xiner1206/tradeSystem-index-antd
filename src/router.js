@@ -1,7 +1,5 @@
 import React,{Component} from 'react';
 import {HashRouter,Route,Switch} from 'react-router-dom';
-import DefaultLayout from './layouts/DefaultLayout/DefaultLayout.js';
-import Login from "./layouts/Login/Login";
 import Index from './layouts/Index/index'
 import Trade from './routes/Trade/Trade'
 import Store from './routes/Store/Store'
