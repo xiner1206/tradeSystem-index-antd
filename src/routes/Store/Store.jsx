@@ -349,7 +349,10 @@ class Store extends Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <Layout>
-        <Form className="ant-advanced-search-form" onSubmit={this.handleSearch}>
+        <Form
+          className="ant-advanced-search-form"
+          onSubmit={this.handleSearch}
+        >
           <Row gutter={24}>
             <Col span={8}>
               <Form.Item label={`商铺名称`}>
@@ -430,13 +433,15 @@ class Store extends Component {
                   >
                     查看信息
                   </Button>
-                  <Divider type="vertical" />
+                  <br/>
                   <Button
                     size="small"
                     onClick={this.handleRate.bind(this, item.storeId)}
                   >
                     评分
                   </Button>
+                  <Divider type="vertical" />
+                  <Button size="small">对比</Button>
                 </div>
               }
             >
@@ -497,20 +502,27 @@ class Store extends Component {
                   <br />
                   <Button
                     type="primary"
+                    size="small"
                     onClick={this.handleEnter.bind(this, item.storeId)}
                   >
                     进入店铺
                   </Button>
                   <Divider type="vertical" />
                   <Button
+                    size="small"
                     onClick={this.handleViewDetail.bind(this, item.storeId)}
                   >
                     查看信息
                   </Button>
                   <Divider type="vertical" />
-                  <Button onClick={this.handleRate.bind(this, item.storeId)}>
+                  <Button
+                    size="small"
+                    onClick={this.handleRate.bind(this, item.storeId)}
+                  >
                     评分
                   </Button>
+                  <Divider type="vertical" />
+                  <Button size="small">对比</Button>
                 </div>
               }
             >

@@ -604,7 +604,7 @@ export default class Commodity extends Component {
                            <b>类似商品：</b>
                            <List
                              className="ant-commodity-list"
-                             grid={{ column: 4 }}
+                             grid={{ column: 3 }}
                              loading={loading}
                              size="small"
                              pagination={false}
