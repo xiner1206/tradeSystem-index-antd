@@ -262,27 +262,56 @@ class Store extends Component {
             console.log(error);
           });
   };
+
+
+
   handleSearch = e => {
     e.preventDefault();
+    const flag = this.props.location.state
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log(values);
-        axios
-          .post("http://localhost:8080/TradingArea/store/onePic", {
-            pageNum: "1",
-            pageSize: "10",
-            condition: {
-              storeName: values.storeName,
-              storeType: values.storeType
-            }
-          })
-          .then(response => {
-            console.log(response);
-            this.setState({ listData: response.data.list });
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
+        if(flag){
+          axios
+            .post("http://localhost:8080/TradingArea/store/onePic", {
+              pageNum: "1",
+              pageSize: "10",
+              condition: {
+                trade:{
+                  tradeId:flag.tradeId
+                },
+                storeName: values.storeName,
+                storeType: values.storeType
+              }
+            })
+            .then(response => {
+              console.log(response);
+              this.setState({ listData: response.data.list });
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        }else{
+          axios
+            .post("http://localhost:8080/TradingArea/store/onePic", {
+              pageNum: "1",
+              pageSize: "10",
+              condition: {
+                trade: {
+                  tradeId: ""
+                },
+                storeName: values.storeName,
+                storeType: values.storeType
+              }
+            })
+            .then(response => {
+              console.log(response);
+              this.setState({ listData: response.data.list });
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        }
       }
     });
   };
